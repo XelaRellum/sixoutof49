@@ -2,12 +2,21 @@ package sixoutof49
 
 import (
 	"crypto/rand"
+	"errors"
 	"math/big"
 	"sort"
 )
 
+// errors
+var (
+	ErrMinTooLow     = errors.New("min is too low (minimum 1)")
+	ErrMaxTooLow     = errors.New("max is too low (maximum 1)")
+	ErrCountTooLow   = errors.New("count ist too low (minimum 1)")
+	ErrMinGreaterMax = errors.New("min is greater than max")
+)
+
 func createRand(max int) (int, error) {
-	r, err := rand.Int(rand.Reader, big.NewInt(int64(max)))
+	r, err := rand.Int(rand.Reader, big.NewInt(int64(max+1)))
 	if err != nil {
 		return -1, err
 	}
@@ -15,19 +24,36 @@ func createRand(max int) (int, error) {
 	return int(r.Int64()), nil
 }
 
-// Create create 4 unique and random numbers in the range of 1 to 49
+// Create create count unique and random numbers in the range of min to max
 // note: the result is sorted in ascending order
-func Create() ([]int, error) {
+func Create(min int, max int, count int) ([]int, error) {
+	if count < 1 {
+		return nil, ErrCountTooLow
+	}
+
+	if min < 1 {
+		return nil, ErrMinTooLow
+	}
+
+	if max < 1 {
+		return nil, ErrMaxTooLow
+	}
+
+	if min > max {
+		return nil, ErrMinGreaterMax
+	}
+
 	// create a bag full of 49 numbers
-	bag := make([]int, 49)
-	for i := 0; i < 49; i++ {
-		bag[i] = i + 1
+	bagSize := max - min + 1
+	bag := make([]int, bagSize)
+	for i := 0; i < bagSize; i++ {
+		bag[i] = i + min
 	}
 
 	balls := []int{}
 
 	// now make the throws
-	for len(balls) < 6 {
+	for len(balls) < count {
 		// now select one ball out of the bag randomly
 		slot, err := createRand(len(bag) - 1)
 		if err != nil {
