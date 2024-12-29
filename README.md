@@ -4,8 +4,8 @@ Feeling lucky? Play lotto with 6 out of 49!
 
 ## Installation
 
-```text
-$ go get github.com/XelaRellum/sixoutof49
+```sh
+cargo install --git https://github.com/XelaRellum/sixoutof49
 ```
 
 ## Usage
@@ -20,6 +20,6 @@ sixoutof49: your lucky numbers are: 1 2 3 4 5 6
 But if you need a different range or count of number use:
 
 ```text
-$ sixoutof49 -max 50 -count 6
+$ sixoutof49 --max 50 --count 6
 sixoutof49: your lucky numbers are: 1 2 3 4 5 50
 ```
